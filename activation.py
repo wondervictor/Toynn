@@ -15,9 +15,9 @@ class Sigmoid:
 
     def forward(self, x):
         # x.shape: [N, D]
-        y = 1/(1+np.exp(-x))
+        y = 1.0/(1+np.exp(-x))
         self._cache = y
-        return x
+        return y
 
     def backward(self, grad_in):
         y = self._cache
@@ -83,7 +83,7 @@ class Softmax:
     def forward(self, x):
         # x.shape: [N, D]
         x_exp = np.exp(x)
-        y = x_exp / np.sum(x_exp, axis=1)
+        y = x_exp / np.sum(x_exp, axis=1, keepdims=True)
         self._cache = y
         return y
 
@@ -91,7 +91,7 @@ class Softmax:
         # grad_in.shape: [N,D]
         # y.shape: [N, D]
         y = self._cache
-        ygrad = np.sum(y*grad_in, axis=1)
+        ygrad = np.sum(y*grad_in, axis=1, keepdims=True)
         grad_out = y * (grad_in - ygrad)
         return grad_out
 

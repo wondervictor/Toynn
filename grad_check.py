@@ -8,9 +8,11 @@ import numpy as np
 
 import loss
 import layer
+import activation
 
 
 def test_square_loss():
+    print("gradient check: MSE")
 
     x = np.random.rand(5*8).reshape((5, 8)).astype('float32')
     y = np.random.rand(5*8).reshape((5, 8)).astype('float32')
@@ -31,6 +33,7 @@ def test_square_loss():
 
 
 def test_fully_connected():
+    print("gradient check: FullyConnected")
 
     x = np.random.rand(5*8).reshape((5, 8)).astype('float32')
     y = np.random.rand(5*10).reshape((5, 10)).astype('float32')
@@ -80,6 +83,201 @@ def test_fully_connected():
     print(grad_b-torch_grad_b)
 
 
+def test_softmax():
+    print("gradient check: Softmax")
+    x = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+    y = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+
+    softmax = activation.Softmax()
+    sqaure_loss_func = loss.SquareLoss()
+
+    softmax_x = softmax(x)
+    square_loss = sqaure_loss_func(softmax_x, y)
+
+    torch_x = torch.Tensor(x)
+    torch_x.requires_grad = True
+    softmax_torch = nn.Softmax()
+    square_loss_func_torch = nn.MSELoss()
+    softmax_x_torch = softmax_torch(torch_x)
+    sqaure_loss_torch = square_loss_func_torch(softmax_x_torch, torch.Tensor(y))
+
+    print("Value:\ntorch:{},mine:{}, delta:{}".format(sqaure_loss_torch.item(), square_loss,
+                                                      (sqaure_loss_torch.item()-square_loss)))
+
+    # --- my grad ---
+    grad_softmax = sqaure_loss_func.backward()
+    grad_x = softmax.backward(grad_softmax)
+
+    # --- torch grad ---
+    sqaure_loss_torch.backward()
+    grad_x_torch = torch_x.grad.data.numpy()
+
+    print(grad_x_torch - grad_x)
+
+
+def test_sigmoid():
+    print("gradient check: Sigmoid")
+    x = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+    y = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+
+    sigmoid = activation.Sigmoid()
+    sqaure_loss_func = loss.SquareLoss()
+
+    sigmoid_x = sigmoid(x)
+    square_loss = sqaure_loss_func(sigmoid_x, y)
+
+    torch_x = torch.Tensor(x)
+    torch_x.requires_grad = True
+    sigmoid_torch = nn.Sigmoid()
+    square_loss_func_torch = nn.MSELoss()
+    sigmoid_x_torch = sigmoid_torch(torch_x)
+    sqaure_loss_torch = square_loss_func_torch(sigmoid_x_torch, torch.Tensor(y))
+
+    print("Value:\ntorch:{},mine:{}, delta:{}".format(sqaure_loss_torch.item(), square_loss,
+                                                      (sqaure_loss_torch.item()-square_loss)))
+
+    # --- my grad ---
+    grad_sigmoid = sqaure_loss_func.backward()
+    grad_x = sigmoid.backward(grad_sigmoid)
+
+    # --- torch grad ---
+    sqaure_loss_torch.backward()
+    grad_x_torch = torch_x.grad.data.numpy()
+
+    print(grad_x_torch - grad_x)
+
+
+def test_relu():
+    print("gradient check: ReLU")
+    x = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+    y = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+
+    act = activation.ReLU()
+    sqaure_loss_func = loss.SquareLoss()
+
+    y_ = act(x)
+    square_loss = sqaure_loss_func(y_, y)
+
+    torch_x = torch.Tensor(x)
+    torch_x.requires_grad = True
+    act_torch = nn.ReLU()
+    square_loss_func_torch = nn.MSELoss()
+    y_torch = act_torch(torch_x)
+    sqaure_loss_torch = square_loss_func_torch(y_torch, torch.Tensor(y))
+
+    print("Value:\ntorch:{},mine:{}, delta:{}".format(sqaure_loss_torch.item(), square_loss,
+                                                      (sqaure_loss_torch.item()-square_loss)))
+
+    # --- my grad ---
+    grad_sigmoid = sqaure_loss_func.backward()
+    grad_x = act.backward(grad_sigmoid)
+
+    # --- torch grad ---
+    sqaure_loss_torch.backward()
+    grad_x_torch = torch_x.grad.data.numpy()
+
+    print(grad_x_torch - grad_x)
+
+
+def test_leakyrelu():
+    print("gradient check: Leaky ReLU")
+    x = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+    y = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+
+    act = activation.LeakyReLU(negative_slope=0.4)
+    sqaure_loss_func = loss.SquareLoss()
+
+    y_ = act(x)
+    square_loss = sqaure_loss_func(y_, y)
+
+    torch_x = torch.Tensor(x)
+    torch_x.requires_grad = True
+    act_torch = nn.LeakyReLU(negative_slope=0.4)
+    square_loss_func_torch = nn.MSELoss()
+    y_torch = act_torch(torch_x)
+    sqaure_loss_torch = square_loss_func_torch(y_torch, torch.Tensor(y))
+
+    print("Value:\ntorch:{},mine:{}, delta:{}".format(sqaure_loss_torch.item(), square_loss,
+                                                      (sqaure_loss_torch.item()-square_loss)))
+
+    # --- my grad ---
+    grad_sigmoid = sqaure_loss_func.backward()
+    grad_x = act.backward(grad_sigmoid)
+
+    # --- torch grad ---
+    sqaure_loss_torch.backward()
+    grad_x_torch = torch_x.grad.data.numpy()
+
+    print(grad_x_torch - grad_x)
+
+
+def test_elu():
+
+    print("gradient check: ELU")
+    x = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+    y = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+
+    act = activation.ELU(alpha=0.2)
+    sqaure_loss_func = loss.SquareLoss()
+
+    y_ = act(x)
+    square_loss = sqaure_loss_func(y_, y)
+
+    torch_x = torch.Tensor(x)
+    torch_x.requires_grad = True
+    act_torch = nn.ELU(alpha=0.2)
+    square_loss_func_torch = nn.MSELoss()
+    y_torch = act_torch(torch_x)
+    sqaure_loss_torch = square_loss_func_torch(y_torch, torch.Tensor(y))
+
+    print("Value:\ntorch:{},mine:{}, delta:{}".format(sqaure_loss_torch.item(), square_loss,
+                                                      (sqaure_loss_torch.item()-square_loss)))
+
+    # --- my grad ---
+    grad_sigmoid = sqaure_loss_func.backward()
+    grad_x = act.backward(grad_sigmoid)
+
+    # --- torch grad ---
+    sqaure_loss_torch.backward()
+    grad_x_torch = torch_x.grad.data.numpy()
+
+    print(grad_x_torch - grad_x)
+
+
+def test_tanh():
+
+    print("gradient check: Tanh")
+    x = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+    y = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+
+    act = activation.Tanh()
+    sqaure_loss_func = loss.SquareLoss()
+
+    y_ = act(x)
+    square_loss = sqaure_loss_func(y_, y)
+
+    torch_x = torch.Tensor(x)
+    torch_x.requires_grad = True
+    act_torch = nn.Tanh()
+    square_loss_func_torch = nn.MSELoss()
+    y_torch = act_torch(torch_x)
+    sqaure_loss_torch = square_loss_func_torch(y_torch, torch.Tensor(y))
+
+    print("Value:\ntorch:{},mine:{}, delta:{}".format(sqaure_loss_torch.item(), square_loss,
+                                                      (sqaure_loss_torch.item()-square_loss)))
+
+    # --- my grad ---
+    grad_sigmoid = sqaure_loss_func.backward()
+    grad_x = act.backward(grad_sigmoid)
+
+    # --- torch grad ---
+    sqaure_loss_torch.backward()
+    grad_x_torch = torch_x.grad.data.numpy()
+
+    print(grad_x_torch - grad_x)
+
 
 if __name__ == '__main__':
-    test_fully_connected()
+    test_leakyrelu()
+    test_elu()
+    test_tanh()
