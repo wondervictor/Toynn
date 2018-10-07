@@ -18,7 +18,7 @@ def mnist_model():
 
     initializer = parameter.GaussianInitializer(std=0.1)
     bias_initializer = parameter.ConstantInitializer(0.1)
-    model = network.Network(reg=0.5)
+    model = network.Network(reg=1e-4)
     model.add(
         FullyConnected(
             in_feature=784,
