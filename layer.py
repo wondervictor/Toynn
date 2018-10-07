@@ -9,9 +9,10 @@ import parameter
 
 class FullyConnected:
 
-    def __init__(self, mode,
+    def __init__(self,
                  in_feature,
                  out_feature,
+                 mode='train',
                  weight_initializer=None,
                  bias_initializer=None):
 

@@ -10,19 +10,29 @@ import numpy as np
 class CrossEntropyLoss:
 
     def __init__(self):
-        self.cache = None
+        self._cache = None
 
     def forward(self, pred, target):
-        pass
+        # pred: [N,D]
+        # target: [N,D]
+
+        y = -np.sum(target * np.log(pred))
+        self._cache = pred, target
+        return y/pred.shape[0]
 
     def backward(self):
-        pass
+        pred, target = self._cache
+        grad = - target / (pred*pred.shape[0])
+        return grad
+
+    def __call__(self, pred, target):
+        return self.forward(pred, target)
 
 
 class SquareLoss:
 
     def __init__(self):
-        self.cache = None
+        self._cache = None
 
     def forward(self, pred, target):
         """ Square Loss (L2 Loss)
@@ -32,11 +42,11 @@ class SquareLoss:
         Return:
         """
         assert pred.shape == target.shape, "pred.shape should be same with target.shape"
-        self.cache = pred, target
+        self._cache = pred, target
         return np.mean(np.square((pred-target)))
 
     def backward(self):
-        pred, target = self.cache
+        pred, target = self._cache
         grad = 2*(pred - target)
         return grad / (pred.shape[0]*pred.shape[1])
 
@@ -48,7 +58,7 @@ class SquareLoss:
 class L1Loss:
 
     def __init__(self):
-        self.cache = None
+        self._cache = None
 
     def forward(self, pred, target):
         pass

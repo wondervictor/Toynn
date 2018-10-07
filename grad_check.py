@@ -10,6 +10,9 @@ import loss
 import layer
 import activation
 
+from sklearn.metrics import log_loss
+
+
 
 def test_square_loss():
     print("gradient check: MSE")
@@ -30,6 +33,33 @@ def test_square_loss():
     torch_x_grad = torch_x.grad.data.numpy()
     x_grad = square_loss_func.backward()
     print(np.sum(x_grad - torch_x_grad, 0))
+
+
+def test_cross_entropy_loss():
+    print("gradient check: Cross Entropy")
+
+    x = np.random.rand(5*8).reshape((5, 8)).astype('float32')
+    softmax = activation.Softmax()
+    x_soft = softmax(x)
+    y = np.array([1, 4, 6, 3, 2], dtype='int32')
+    y_onehot = np.zeros((5, 8)).astype('float32')
+    y_onehot[range(0, 5), y] = 1.
+    print(x)
+    print('log loss: ', log_loss(y, x_soft, labels=[0, 1, 2, 3, 4, 5, 6, 7]))
+    cross_entropy_f = loss.CrossEntropyLoss()
+    cross_entropy_torch = nn.CrossEntropyLoss()
+
+    torch_x = torch.Tensor(x)
+    torch_x.requires_grad = True
+    ce_loss_torch = cross_entropy_torch(torch_x, torch.LongTensor(y))
+    ce_loss = cross_entropy_f(x_soft, y_onehot)
+    print("Value:\ntorch:{},mine:{}, delta:{}"
+          .format(ce_loss_torch.item(), ce_loss, (ce_loss-ce_loss_torch.item())))
+    ce_loss_torch.backward()
+    torch_x_grad = torch_x.grad.data.numpy()
+    x_grad = softmax.backward(cross_entropy_f.backward())
+    # print(np.sum(x_grad - torch_x_grad, 0))
+    print(x_grad - torch_x_grad)
 
 
 def test_fully_connected():
@@ -278,6 +308,5 @@ def test_tanh():
 
 
 if __name__ == '__main__':
-    test_leakyrelu()
-    test_elu()
-    test_tanh()
+    test_softmax()
+    test_cross_entropy_loss()
