@@ -6,12 +6,14 @@ import numpy as np
 
 class Parameter:
 
-    data = None
-    grad = None
+    def __init__(self, shape, with_grad=False, initializer=None):
 
-    def __init__(self, shape, initializer=None):
+        self.data = None
+        self.grad = None
         self.initializer = initializer
         self.shape = shape
+
+        self.initialize(with_grad=with_grad)
 
     def get_grad(self):
         return self.grad
@@ -22,9 +24,10 @@ class Parameter:
     def get_data(self):
         return self.data
 
-    def initailize(self):
+    def initialize(self, with_grad=False):
         self.data = self.initializer(self.shape)
-        self.grad = np.zeros(self.shape)
+        if with_grad:
+            self.grad = np.zeros(self.shape)
 
     def update(self, delta):
         self.data += delta

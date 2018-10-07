@@ -9,10 +9,8 @@ import numpy as np
 
 class CrossEntropyLoss:
 
-    cache = None
-
     def __init__(self):
-        pass
+        self.cache = None
 
     def forward(self, pred, target):
         pass
@@ -23,10 +21,8 @@ class CrossEntropyLoss:
 
 class SquareLoss:
 
-    cache = None
-
     def __init__(self):
-        pass
+        self.cache = None
 
     def forward(self, pred, target):
         """ Square Loss (L2 Loss)
@@ -47,10 +43,8 @@ class SquareLoss:
 
 class L1Loss:
 
-    cache = None
-
     def __init__(self):
-        pass
+        self.cache = None
 
     def forward(self, pred, target):
         pass
