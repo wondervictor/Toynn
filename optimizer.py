@@ -8,8 +8,6 @@ import numpy as np
 
 class SGD:
 
-    learning_rate = 1e-2
-
     def __init__(self, lr):
         self.learning_rate = lr
 
@@ -17,13 +15,12 @@ class SGD:
         self.learning_rate = lr
 
     def _optimize_func(self, data, grad):
-        delta = 0.0 * self.learning_rate
-        # TODO: SGD Optimize
+        delta = -grad * self.learning_rate
         return delta
 
     def optimize(self, params):
 
-        for param in params:
+        for _, param in params.items():
             delta = self._optimize_func(param.get_data(), param.get_grad())
             param.update(delta)
 

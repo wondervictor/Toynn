@@ -15,9 +15,12 @@ class Network:
         assert layer is not None
 
         self.layers.append(layer)
-        if layer.params is not None:
-            for k, v in layer.params.items():
-                self._params[name+':'+k] = v
+        try:
+            if layer.params is not None:
+                for k, v in layer.params.items():
+                    self._params[name+':'+k] = v
+        except AttributeError as e:
+            pass
 
     def add_loss(self, loss_layer):
         self.loss_layer = loss_layer
@@ -54,9 +57,11 @@ class Network:
         pass
 
     def __repr__(self):
-
+        s = '------- Network -------\n'
         for i in range(len(self.layers)):
-            print("[{}]: {}".format(i, type(self.layers[i])))
+            s += "[{}]: {}\n".format(i, self.layers[i])
+
+        return s+"------- Network -------\n"
 
     def __call__(self, x, y=None):
         return self.forward(x, y)

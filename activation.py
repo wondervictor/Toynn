@@ -52,7 +52,7 @@ class ReLU:
 
 class LeakyReLU:
 
-    def __init__(self, negative_slope):
+    def __init__(self, negative_slope=0.2):
         self.negative_slope = negative_slope
         self._cache = None
 

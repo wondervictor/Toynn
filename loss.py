@@ -28,6 +28,9 @@ class CrossEntropyLoss:
     def __call__(self, pred, target):
         return self.forward(pred, target)
 
+    def __repr__(self):
+        return "Loss: Cross Entropy Loss"
+
 
 class SquareLoss:
 
@@ -54,6 +57,9 @@ class SquareLoss:
 
         return self.forward(pred, target)
 
+    def __repr__(self):
+        return "Loss: Square Loss"
+
 
 class L1Loss:
 
@@ -65,3 +71,6 @@ class L1Loss:
 
     def backward(self):
         pass
+
+    def __repr__(self):
+        return "Loss: L1 Loss"
