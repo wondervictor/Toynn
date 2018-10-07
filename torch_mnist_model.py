@@ -28,7 +28,7 @@ def mnist_model():
         nn.Linear(128, 10)
     )
     model.apply(weight_init)
-    optimizer = optim.Adam(lr=1e-3, params=model.parameters())
+    optimizer = optim.SGD(lr=1e-3, params=model.parameters())
     loss_criterion = nn.CrossEntropyLoss()
     traingset = fetch_traingset()
     testset = fetch_testingset()

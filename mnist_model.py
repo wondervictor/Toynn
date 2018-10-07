@@ -49,7 +49,7 @@ def mnist_model():
     model.add(Softmax(), name='softmax')
 
     model.add_loss(CrossEntropyLoss())
-    lr = 0.8
+    lr = 0.001
     optimizer = SGD(lr=lr)
 
     print(model)
@@ -73,7 +73,7 @@ def mnist_model():
             _, loss = model.forward(batch_images, batch_labels)
             losses.append(loss)
             model.backward()
-            model.optimize()
+            model.optimize(lr=0.1)
 
         predicts = np.zeros((len(test_labels)))
         for i in range(int(len(test_labels)/1000)):

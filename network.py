@@ -48,11 +48,11 @@ class Network:
         # input's grad
         return grad
 
-    def optimize(self):
+    def optimize(self, lr):
         # SGD
         for layer in self.param_layers:
-            layer.params['weights'].data -= layer.params['weights'].grad * 1e-2
-            layer.params['bias'].data -= layer.params['bias'].grad * 1e-2
+            layer.params['weights'].data -= layer.params['weights'].grad * lr
+            layer.params['bias'].data -= layer.params['bias'].grad * lr
 
             # optimizer.optimize(layer.params)
 
