@@ -4,7 +4,6 @@
     <list default="true" id="26f6d4f4-aa38-46b7-b2da-037b0de0f66f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/mnist_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/mnist_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/torch_mnist_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/torch_mnist_model.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,13 +29,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="gitignore" value="54" />
-          <entry key="py" value="14202" />
+          <entry key="py" value="14260" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="54" />
-          <entry key="Python" value="14202" />
+          <entry key="Python" value="14260" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -75,15 +74,15 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/network.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="54" column="71" selection-start-line="54" selection-start-column="71" selection-end-line="54" selection-end-column="71" />
+            <state relative-caret-position="168">
+              <caret line="55" column="41" lean-forward="true" selection-start-line="55" selection-start-column="41" selection-end-line="55" selection-end-column="41" />
               <folding>
-                <marker date="1538919779877" expanded="true" signature="32:33" ph="..." />
-                <marker date="1538919779877" expanded="true" signature="229:235" ph="..." />
-                <marker date="1538919779877" expanded="true" signature="695:700" ph="..." />
-                <marker date="1538919779877" expanded="true" signature="960:965" ph="..." />
-                <marker date="1538919779877" expanded="true" signature="984:1207" ph="..." />
-                <marker date="1538919779877" expanded="true" signature="1244:1488" ph="..." />
+                <marker date="1538920437614" expanded="true" signature="32:33" ph="..." />
+                <marker date="1538920437614" expanded="true" signature="261:267" ph="..." />
+                <marker date="1538920437614" expanded="true" signature="727:732" ph="..." />
+                <marker date="1538920437614" expanded="true" signature="992:997" ph="..." />
+                <marker date="1538920437614" expanded="true" signature="1016:1239" ph="..." />
+                <marker date="1538920437614" expanded="true" signature="1276:1562" ph="..." />
               </folding>
             </state>
           </provider>
@@ -133,8 +132,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mnist_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
-              <caret line="78" column="19" selection-start-line="78" selection-start-column="19" selection-end-line="78" selection-end-column="19" />
+            <state relative-caret-position="181">
+              <caret line="20" column="35" selection-start-line="20" selection-start-column="34" selection-end-line="20" selection-end-column="35" />
               <folding>
                 <element signature="e#9#20#0" expanded="true" />
               </folding>
@@ -552,23 +551,23 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/network.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="54" column="71" selection-start-line="54" selection-start-column="71" selection-end-line="54" selection-end-column="71" />
+        <state relative-caret-position="168">
+          <caret line="55" column="41" lean-forward="true" selection-start-line="55" selection-start-column="41" selection-end-line="55" selection-end-column="41" />
           <folding>
-            <marker date="1538919779877" expanded="true" signature="32:33" ph="..." />
-            <marker date="1538919779877" expanded="true" signature="229:235" ph="..." />
-            <marker date="1538919779877" expanded="true" signature="695:700" ph="..." />
-            <marker date="1538919779877" expanded="true" signature="960:965" ph="..." />
-            <marker date="1538919779877" expanded="true" signature="984:1207" ph="..." />
-            <marker date="1538919779877" expanded="true" signature="1244:1488" ph="..." />
+            <marker date="1538920437614" expanded="true" signature="32:33" ph="..." />
+            <marker date="1538920437614" expanded="true" signature="261:267" ph="..." />
+            <marker date="1538920437614" expanded="true" signature="727:732" ph="..." />
+            <marker date="1538920437614" expanded="true" signature="992:997" ph="..." />
+            <marker date="1538920437614" expanded="true" signature="1016:1239" ph="..." />
+            <marker date="1538920437614" expanded="true" signature="1276:1562" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mnist_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="78" column="19" selection-start-line="78" selection-start-column="19" selection-end-line="78" selection-end-column="19" />
+        <state relative-caret-position="181">
+          <caret line="20" column="35" selection-start-line="20" selection-start-column="34" selection-end-line="20" selection-end-column="35" />
           <folding>
             <element signature="e#9#20#0" expanded="true" />
           </folding>
