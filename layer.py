@@ -84,10 +84,59 @@ class FullyConnected:
 
 class BatchNorm:
 
-    def __init__(self):
+    def __init__(self, num_features, mode='train', momentum=0.9, eps=1e-5):
         self.gamma = None
         self.beta = None
+        self._cache = None
         self.params = dict()
+        self.running_mean = None
+        self.running_var = None
+        self.momentum = momentum
+        self.eps = eps
+        self.mode = mode
+        self.num_features = num_features
+        self._initialize()
+
+    def _initialize(self):
+        self.gamma = parameter.ConstantInitializer(1.0)(shape=[self.num_features])
+        self.beta = parameter.ConstantInitializer(0.0)(shape=[self.num_features])
+        self.running_mean = np.zeros([self.num_features], dtype='float32')
+        self.running_var = np.zeros([self.num_features], dtype='float32')
+        self.params['gamma'] = self.gamma
+        self.params['beta'] = self.beta
+
+    def forward(self, x):
+        # x.shape: [N, D]
+        if self.mode == 'train':
+            sample_mean = np.mean(x, axis=0)
+            sample_var = np.sum(np.square((x - sample_mean)), axis=0) / x.shape[0]
+            self.running_mean = sample_mean * (1 - self.momentum) + self.running_mean * self.momentum
+            self.running_var = sample_var * (1 - self.momentum) + self.running_var * self.momentum
+            std_var = (np.sqrt(sample_var + self.eps))
+            x_ = (x - sample_mean) / std_var
+            out = self.gamma.get_data() * x_ + self.beta.get_data()
+            self._cache = x, x_, sample_mean, std_var, sample_var
+        else:
+            x_ = (x - self.running_mean) / (np.sqrt(self.running_var + self.eps))
+            out = self.gamma * x_ + self.beta
+
+        return out
+
+    def backward(self, grad_in):
+        x, x_, sample_mean, sqrt_var, var = self._cache
+        N, D = grad_in.shape
+        dx = grad_in * self.gamma.get_data()
+
+        dbeta = np.sum(grad_in, axis=0)
+        dgamma = x_ * grad_in
+        dgamma = np.sum(dgamma, 0)
+
+        dx = (1. / N) * 1 / sqrt_var * (N * dx - np.sum(dx, axis=0) - x_ * np.sum(dx * x_, axis=0))
+
+        self.gamma.set_grad(dgamma)
+        self.beta.set_grad(dbeta)
+
+        return dx
 
 
 class Dropout:
