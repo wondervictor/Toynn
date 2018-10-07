@@ -138,7 +138,40 @@ class BatchNorm:
 
         return dx
 
+    def __call__(self, x):
+        return self.forward(x)
+
+    def __repr__(self):
+
+        return "Layer: Batch Norm"
+
 
 class Dropout:
 
-    pass
+    def __init__(self, mode='train', droprate=0.5):
+        self._cache = None
+        self.dropout_rate = droprate
+        self.mode = mode
+
+    def forward(self, x):
+
+        if self.mode == 'train':
+            probs = np.random.rand(*x.shape)
+            mask = probs > self.dropout_rate
+            out = mask * x
+            self._cache = mask
+        else:
+            out = x
+
+        return out
+
+    def backward(self, grad_in):
+        mask = self._cache
+        return mask * grad_in
+
+    def __call__(self, x):
+        return self.forward(x)
+
+    def __repr__(self):
+        return "Layer: Dropout({})".format(self.dropout_rate)
+
