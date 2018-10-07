@@ -67,10 +67,17 @@ class L1Loss:
         self._cache = None
 
     def forward(self, pred, target):
-        pass
+        self._cache = pred, target
+        return np.mean(np.abs(pred - target))
 
     def backward(self):
-        pass
+        pred, target = self._cache
+        mask1 = pred >= target
+        grad1 = mask1 / (pred.shape[0] * pred.shape[1])
+        mask2 = pred < target
+        grad2 = -1.0 * mask2 / (pred.shape[0] * pred.shape[1])
+        grad = grad1 + grad2
+        return grad
 
     def __repr__(self):
         return "Loss: L1 Loss"
