@@ -9,6 +9,10 @@ class Network:
         self._params = dict()
         self.layers = []
         self.loss_layer = None
+        self.param_layers = []
+
+    def parameters(self):
+        return self._params
 
     def add(self, layer, name):
         assert name is not None
@@ -17,8 +21,9 @@ class Network:
         self.layers.append(layer)
         try:
             if layer.params is not None:
-                for k, v in layer.params.items():
-                    self._params[name+':'+k] = v
+                # for k, v in layer.params.items():
+                    # self._params[name+':'+k] = v
+                self.param_layers.append(layer)
         except AttributeError as e:
             pass
 
@@ -28,7 +33,6 @@ class Network:
     def forward(self, x, y=None):
         for layer in self.layers:
             x = layer(x)
-
         if y is not None and self.loss_layer is not None:
             # compute loss
             loss = self.loss_layer(x, y)
@@ -41,12 +45,16 @@ class Network:
         grad = self.loss_layer.backward()
         for i in range(num_layers-1, 0, -1):
             grad = self.layers[i].backward(grad)
-
         # input's grad
         return grad
 
-    def optimize(self, optimizer):
-        optimizer.optimize(self._params)
+    def optimize(self):
+        # SGD
+        for layer in self.param_layers:
+            layer.params['weights'].data -= layer.params['weights'].grad * 1e-2
+            layer.params['bias'].data -= layer.params['bias'].grad * 1e-2
+
+            # optimizer.optimize(layer.params)
 
     def save_params(self):
         # TODO: save parameters to file

@@ -14,14 +14,14 @@ class SGD:
     def set_lr(self, lr):
         self.learning_rate = lr
 
-    def _optimize_func(self, data, grad):
+    def _optimize_func(self, grad):
         delta = -grad * self.learning_rate
         return delta
 
     def optimize(self, params):
 
         for _, param in params.items():
-            delta = self._optimize_func(param.get_data(), param.get_grad())
+            delta = self._optimize_func(param.get_grad())
             param.update(delta)
 
 

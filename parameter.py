@@ -30,7 +30,7 @@ class Parameter:
             self.grad = np.zeros(self.shape)
 
     def update(self, delta):
-        self.data += delta
+        self.data = self.data + delta
 
 
 class GaussianInitializer:

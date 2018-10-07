@@ -44,7 +44,6 @@ def test_cross_entropy_loss():
     y = np.array([1, 4, 6, 3, 2], dtype='int32')
     y_onehot = np.zeros((5, 8)).astype('float32')
     y_onehot[range(0, 5), y] = 1.
-    print(x)
     print('log loss: ', log_loss(y, x_soft, labels=[0, 1, 2, 3, 4, 5, 6, 7]))
     cross_entropy_f = loss.CrossEntropyLoss()
     cross_entropy_torch = nn.CrossEntropyLoss()
@@ -66,51 +65,81 @@ def test_fully_connected():
     print("gradient check: FullyConnected")
 
     x = np.random.rand(5*8).reshape((5, 8)).astype('float32')
-    y = np.random.rand(5*10).reshape((5, 10)).astype('float32')
+    y = np.array([1, 4, 6, 3, 2], dtype='int32')
+    y_onehot = np.zeros((5, 12)).astype('float32')
+    y_onehot[range(0, 5), y] = 1.
 
     # --- mine --
-    fc = layer.FullyConnected('train', 8, 10)
-    sqaure_loss_func = loss.SquareLoss()
-    fc_out = fc(x)
-    sqaure_loss = sqaure_loss_func(fc_out, y)
+    fc1 = layer.FullyConnected(8, 10)
+    fc2 = layer.FullyConnected(10, 12)
+    relu1 = activation.ReLU()
+    softmax = activation.Softmax()
+    ce_func = loss.CrossEntropyLoss()
+    fc_out1 = fc1(x)
+    fc_out1 = relu1(fc_out1)
+    fc_out2 = fc2(fc_out1)
+    fc_out2 = softmax(fc_out2)
+    sqaure_loss = ce_func(fc_out2, y_onehot)
 
     # --- torch ---
-    weights = fc.weights.get_data()
-    bias = fc.bias.get_data()
+    weights1 = fc1.weights.get_data()
+    bias1 = fc1.bias.get_data()
+    weights2 = fc2.weights.get_data()
+    bias2 = fc2.bias.get_data()
 
     torch_fc = nn.Linear(8, 10)
-    torch_fc.weight.data.copy_(torch.Tensor(weights.T))
-    torch_fc.bias.data.copy_(torch.Tensor(bias))
-    torch_square_func = nn.MSELoss()
+    torch_fc2 = nn.Linear(10, 12)
+    torch_fc.weight.data.copy_(torch.Tensor(weights1.T))
+    torch_fc.bias.data.copy_(torch.Tensor(bias1))
+    torch_fc2.weight.data.copy_(torch.Tensor(weights2.T))
+    torch_fc2.bias.data.copy_(torch.Tensor(bias2))
+    torch_relu = nn.ReLU()
+
+    torch_square_func = nn.CrossEntropyLoss()
     torch_x = torch.Tensor(x)
     torch_x.requires_grad = True
     torch_fc_out = torch_fc(torch_x)
-    torch_sqaure_loss = torch_square_func(torch_fc_out, torch.Tensor(y))
+    torch_fc_out1 = torch_relu(torch_fc_out)
+    torch_fc_out2 = torch_fc2(torch_fc_out1)
+    torch_sqaure_loss = torch_square_func(torch_fc_out2, torch.LongTensor(y))
 
     print("Value:\ntorch:{}, mini:{}, delta:{}".format(
         torch_sqaure_loss.item(), sqaure_loss, (torch_sqaure_loss.item()-sqaure_loss)
     ))
 
     # --- my grad ---
-    grad_x = sqaure_loss_func.backward()
-    grad_fc = fc.backward(grad_x)
-    grad_w = fc.weights.get_grad()
-    grad_b = fc.bias.get_grad()
+    grad_x = ce_func.backward()
+    grad_x = softmax.backward(grad_x)
+    grad_fc2 = fc2.backward(grad_x)
+    grad_w2 = fc2.weights.get_grad()
+    grad_b2 = fc2.bias.get_grad()
+
+    grad_x = relu1.backward(grad_fc2)
+    grad_x = fc1.backward(grad_x)
+    grad_w1 = fc1.weights.get_grad()
+    grad_b1 = fc1.bias.get_grad()
 
     # --- torch grad ---
     torch_sqaure_loss.backward()
     torch_grad_x = torch_x.grad.data.numpy()
-    torch_grad_w = torch_fc.weight.grad.data.numpy()
-    torch_grad_b = torch_fc.bias.grad.data.numpy()
-
+    torch_grad_w1 = torch_fc.weight.grad.data.numpy()
+    torch_grad_b1 = torch_fc.bias.grad.data.numpy()
+    torch_grad_w2 = torch_fc2.weight.grad.data.numpy()
+    torch_grad_b2 = torch_fc2.bias.grad.data.numpy()
     print("--grad x ---")
-    print(grad_fc-torch_grad_x)
+    print(grad_x-torch_grad_x)
 
-    print("--grad w ---")
-    print(grad_w-torch_grad_w.T)
+    print("--grad w1 ---")
+    print(grad_w1-torch_grad_w1.T)
 
-    print("--grad b ---")
-    print(grad_b-torch_grad_b)
+    print("--grad b1 ---")
+    print(grad_b1-torch_grad_b1)
+
+    print("--grad w2 ---")
+    print(grad_w2-torch_grad_w2.T)
+
+    print("--grad b2 ---")
+    print(grad_b2-torch_grad_b2)
 
 
 def test_softmax():
@@ -308,5 +337,8 @@ def test_tanh():
 
 
 if __name__ == '__main__':
+
     test_softmax()
     test_cross_entropy_loss()
+    test_fully_connected()
+
