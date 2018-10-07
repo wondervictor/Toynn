@@ -49,6 +49,7 @@ class ReLU:
     def __repr__(self):
         return "Actication: ReLU"
 
+
 class LeakyReLU:
 
     def __init__(self, negative_slope):
@@ -90,8 +91,9 @@ class Softmax:
         # grad_in.shape: [N,D]
         # y.shape: [N, D]
         y = self._cache
-
-        return y
+        ygrad = np.sum(y*grad_in, axis=1)
+        grad_out = y * (grad_in - ygrad)
+        return grad_out
 
     def __repr__(self):
         return "Actication: Softmax"
@@ -107,13 +109,14 @@ class Tanh:
 
     def forward(self, x):
         self._cache = x
-        # TODO: Tanh Computation
-        return x
+        y = np.tanh(x)
+        self._cache = y
+        return y
 
     def backward(self, grad_in):
-        x = self._cache
-        # TODO: Gradient Computation
-        return x
+        y = self._cache
+        grad_out = grad_in * (1-y**2)
+        return grad_out
 
     def __repr__(self):
         return "Actication: Tanh"
@@ -121,21 +124,23 @@ class Tanh:
 
 class ELU:
 
-    def __init__(self):
+    def __init__(self, alpha=0.0):
         self._cache = None
+        self.alpha = alpha
 
     def __call__(self, x):
         return self.forward(x)
 
     def forward(self, x):
-        self._cache = x
-        # TODO: ELU Computation
+        mask = x >= 0
+        y = mask * x + (1 - mask) * self.alpha * (np.exp(x)-1)
+        self._cache = mask, y
         return x
 
     def backward(self, grad_in):
-        x = self._cache
-        # TODO: Gradient Computation
-        return x
+        mask, y = self._cache
+        grad_out = grad_in * mask + (1-mask)*(y+self.alpha)
+        return grad_out
 
     def __repr__(self):
         return "Actication: ELU"
