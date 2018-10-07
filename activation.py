@@ -7,106 +7,135 @@ import numpy as np
 
 class Sigmoid:
 
-    cache = None
-
     def __init__(self):
-        pass
+        self._cache = None
 
     def __call__(self, x):
-        self.cache = x
-        # TODO: Sigmoid Computation
+        return self.forward(x)
+
+    def forward(self, x):
+        # x.shape: [N, D]
+        y = 1/(1+np.exp(-x))
+        self._cache = y
         return x
 
     def backward(self, grad_in):
-        x = self.cache
-        # TODO: Gradient Computation
-        return x
+        y = self._cache
+        return (1-y)*y*grad_in
+
+    def __repr__(self):
+        return "Actication: Sigmoid"
 
 
 class ReLU:
 
-    cache = None
-
     def __init__(self):
-        pass
+        self._cache = None
 
     def __call__(self, x):
-        self.cache = x
-        # TODO: Sigmoid Computation
-        return x
+        return self.forward(x)
+
+    def forward(self, x):
+        # x.shape: [N, D]
+        mask = x > 0
+        self._cache = mask
+        return mask * x
 
     def backward(self, grad_in):
-        x = self.cache
-        # TODO: Gradient Computation
-        return x
+        # grad_in.shape: [N, D]
+        mask = self._cache
+        return mask * grad_in
 
+    def __repr__(self):
+        return "Actication: ReLU"
 
 class LeakyReLU:
-    cache = None
-    negative_slope = 1e-2
 
     def __init__(self, negative_slope):
         self.negative_slope = negative_slope
+        self._cache = None
 
     def __call__(self, x):
-        self.cache = x
-        # TODO: Sigmoid Computation
-        return x
+        return self.forward(x)
+
+    def forward(self, x):
+        mask = x > 0
+        self._cache = mask
+        return x*mask + (1-mask)*x*self.negative_slope
 
     def backward(self, grad_in):
-        x = self.cache
-        # TODO: Gradient Computation
-        return x
+        mask = self._cache
+        return grad_in * mask + (1-mask)*grad_in*self.negative_slope
+
+    def __repr__(self):
+        return "Actication: LeakyReLU ({})".format(self.negative_slope)
 
 
 class Softmax:
 
-    cache = None
-
     def __init__(self):
-        pass
+        self._cache = None
 
     def __call__(self, x):
-        self.cache = x
-        # TODO: Sigmoid Computation
-        return x
+        return self.forward(x)
+
+    def forward(self, x):
+        # x.shape: [N, D]
+        x_exp = np.exp(x)
+        y = x_exp / np.sum(x_exp, axis=1)
+        self._cache = y
+        return y
 
     def backward(self, grad_in):
-        x = self.cache
-        # TODO: Gradient Computation
-        return x
+        # grad_in.shape: [N,D]
+        # y.shape: [N, D]
+        y = self._cache
+
+        return y
+
+    def __repr__(self):
+        return "Actication: Softmax"
 
 
 class Tanh:
-    cache = None
 
     def __init__(self):
-        pass
+        self._cache = None
 
     def __call__(self, x):
-        self.cache = x
-        # TODO: Sigmoid Computation
+        return self.forward(x)
+
+    def forward(self, x):
+        self._cache = x
+        # TODO: Tanh Computation
         return x
 
     def backward(self, grad_in):
-        x = self.cache
+        x = self._cache
         # TODO: Gradient Computation
         return x
+
+    def __repr__(self):
+        return "Actication: Tanh"
 
 
 class ELU:
 
-    cache = None
-
     def __init__(self):
-        pass
+        self._cache = None
 
     def __call__(self, x):
-        self.cache = x
-        # TODO: Sigmoid Computation
+        return self.forward(x)
+
+    def forward(self, x):
+        self._cache = x
+        # TODO: ELU Computation
         return x
 
     def backward(self, grad_in):
-        x = self.cache
+        x = self._cache
         # TODO: Gradient Computation
         return x
+
+    def __repr__(self):
+        return "Actication: ELU"
