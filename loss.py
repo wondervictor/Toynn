@@ -38,7 +38,11 @@ class SquareLoss:
     def backward(self):
         pred, target = self.cache
         grad = 2*(pred - target)
-        return grad
+        return grad / (pred.shape[0]*pred.shape[1])
+
+    def __call__(self, pred, target):
+
+        return self.forward(pred, target)
 
 
 class L1Loss:

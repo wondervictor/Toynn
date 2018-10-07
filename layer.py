@@ -9,7 +9,12 @@ import parameter
 
 class FullyConnected:
 
-    def __init__(self, mode, in_feature, out_feature, weight_initializer=None, bias_initializer=None):
+    def __init__(self, mode,
+                 in_feature,
+                 out_feature,
+                 weight_initializer=None,
+                 bias_initializer=None):
+
         self.weights = None
         self.bias = None
         self.cache = None
@@ -50,7 +55,7 @@ class FullyConnected:
         # grad_in.shape: [N, D2]
         assert grad_in.shape[1] == self.weights_shape[1]
         # bias gradient
-        self.bias.set_grad(grad_in)
+        self.bias.set_grad(np.sum(grad_in, 0))
 
         x = self.cache
 
@@ -63,6 +68,9 @@ class FullyConnected:
         # (N, D2) * (D2, D1) -> (N, D1)
         grad_out = np.matmul(grad_in, self.weights.get_data().T)
         return grad_out
+
+    def __call__(self, x):
+        return self.forward(x)
 
 
 class BatchNorm:
