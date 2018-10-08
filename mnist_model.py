@@ -7,7 +7,7 @@ import numpy as np
 from activation import Softmax, ReLU, LeakyReLU
 from layer import FullyConnected
 from loss import CrossEntropyLoss
-from optimizer import SGD
+from optimizer import SGD, Momentum, Adam
 import parameter
 import network
 from utils import one_hot
@@ -47,7 +47,7 @@ def mnist_model():
 
     model.add_loss(CrossEntropyLoss())
     lr = 0.1
-    optimizer = SGD(lr=lr)
+    optimizer = Adam(lr=lr)
 
     print(model)
     for k, v in model.parameters().items():
