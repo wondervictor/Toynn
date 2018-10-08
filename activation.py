@@ -10,6 +10,7 @@ class Sigmoid:
     def __init__(self, name='sigmoid'):
         self.name = name
         self._cache = None
+        self.mode = 'train'
 
     def __call__(self, x):
         return self.forward(x)
@@ -33,6 +34,7 @@ class ReLU:
     def __init__(self, name='relu'):
         self.name = name
         self._cache = None
+        self.mode = 'train'
 
     def __call__(self, x):
         return self.forward(x)
@@ -58,6 +60,7 @@ class LeakyReLU:
         self.name = name
         self.negative_slope = negative_slope
         self._cache = None
+        self.mode = 'train'
 
     def __call__(self, x):
         return self.forward(x)
@@ -79,6 +82,7 @@ class Softmax:
 
     def __init__(self, name='softmax'):
         self.name = name
+        self.mode = 'train'
         self._cache = None
 
     def __call__(self, x):
@@ -107,6 +111,7 @@ class Tanh:
 
     def __init__(self, name='tanh'):
         self.name = name
+        self.mode = 'train'
         self._cache = None
 
     def __call__(self, x):
@@ -131,6 +136,7 @@ class ELU:
 
     def __init__(self, name='elu', alpha=0.0):
         self.name = name
+        self.mode = 'train'
         self._cache = None
         self.alpha = alpha
 

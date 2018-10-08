@@ -5,7 +5,7 @@ import tqdm
 import random
 import numpy as np
 from activation import Softmax, ReLU, LeakyReLU
-from layer import FullyConnected
+from layer import FullyConnected, BatchNorm
 from loss import CrossEntropyLoss
 from optimizer import SGD, Momentum, Adam
 import parameter
@@ -27,6 +27,10 @@ def mnist_model():
             out_feature=512,
             weight_initializer=initializer,
             bias_initializer=bias_initializer))
+    model.add(
+        BatchNorm(name='bn1',
+                  num_features=512)
+    )
     model.add(ReLU(name='relu1'))
     model.add(
         FullyConnected(
@@ -47,7 +51,7 @@ def mnist_model():
 
     model.add_loss(CrossEntropyLoss())
     lr = 0.1
-    optimizer = Adam(lr=lr)
+    optimizer = Momentum(lr=lr)
 
     print(model)
     for k, v in model.parameters().items():
@@ -63,6 +67,7 @@ def mnist_model():
     pbar = tqdm.tqdm(range(100))
     for epoch in pbar:
         losses = []
+        model.train_mode()
         for i in range(int(training_size/batch_size)):
             batch_images = np.array(images[i*batch_size:(i+1)*batch_size])
             batch_labels = np.array(labels[i*batch_size:(i+1)*batch_size])
@@ -72,6 +77,7 @@ def mnist_model():
             model.backward()
             model.optimize(optimizer)
 
+        model.eval_mode()
         predicts = np.zeros((len(test_labels)))
         for i in range(int(len(test_labels)/1000)):
             batch_images = np.array(test_images[i*1000:(i+1)*1000])

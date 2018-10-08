@@ -2,6 +2,8 @@
 Network
 """
 
+import layer as Layer
+
 
 class Network:
 
@@ -20,8 +22,6 @@ class Network:
         self.layers.append(layer)
         try:
             if layer.params is not None:
-                # for k, v in layer.params.items():
-                    # self._params[name+':'+k] = v
                 self.param_layers.append(layer)
         except AttributeError as e:
             pass
@@ -38,6 +38,14 @@ class Network:
             return x, loss
 
         return x
+
+    def train_mode(self):
+        for layer in self.layers:
+            layer.mode = 'train'
+
+    def eval_mode(self):
+        for layer in self.layers:
+            layer.mode = 'test'
 
     def backward(self):
         num_layers = len(self.layers)

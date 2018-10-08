@@ -103,8 +103,8 @@ class BatchNorm:
         self._initialize()
 
     def _initialize(self):
-        self.gamma = parameter.ConstantInitializer(1.0)(shape=[self.num_features])
-        self.beta = parameter.ConstantInitializer(0.0)(shape=[self.num_features])
+        self.gamma = parameter.Parameter(shape=[self.num_features], initializer=parameter.ConstantInitializer(1.0))
+        self.beta = parameter.Parameter(shape=[self.num_features], initializer=parameter.ConstantInitializer(0.0))
         self.running_mean = np.zeros([self.num_features], dtype='float32')
         self.running_var = np.zeros([self.num_features], dtype='float32')
         self.params['gamma'] = self.gamma
@@ -123,7 +123,7 @@ class BatchNorm:
             self._cache = x, x_, sample_mean, std_var, sample_var
         else:
             x_ = (x - self.running_mean) / (np.sqrt(self.running_var + self.eps))
-            out = self.gamma * x_ + self.beta
+            out = self.gamma.get_data() * x_ + self.beta.get_data()
 
         return out
 
@@ -148,7 +148,7 @@ class BatchNorm:
 
     def __repr__(self):
 
-        return "Layer: Batch Norm"
+        return "Batch Norm"
 
 
 class Dropout:
@@ -179,5 +179,5 @@ class Dropout:
         return self.forward(x)
 
     def __repr__(self):
-        return "Layer: Dropout({})".format(self.dropout_rate)
+        return "Dropout({})".format(self.dropout_rate)
 
