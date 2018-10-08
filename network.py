@@ -47,7 +47,7 @@ class Network:
         for layer in self.layers:
             layer.mode = 'test'
 
-    def backward(self):
+    def _backward(self):
         num_layers = len(self.layers)
         grad = self.loss_layer.backward()
         for i in range(num_layers-1, 0, -1):
@@ -57,6 +57,7 @@ class Network:
 
     def optimize(self, optimizer):
         # SGD
+        _ = self._backward()
         for layer in self.param_layers:
             for k in layer.params.keys():
                 layer.params[k].data -= optimizer.optimize(layer.params[k].get_grad(), layer.name+k)

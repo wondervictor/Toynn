@@ -74,7 +74,6 @@ def mnist_model():
             batch_labels = one_hot(batch_labels, 10)
             _, loss = model.forward(batch_images, batch_labels)
             losses.append(loss)
-            model.backward()
             model.optimize(optimizer)
 
         model.eval_mode()
