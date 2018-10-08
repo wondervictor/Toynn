@@ -15,7 +15,7 @@ class SGD:
         self.learning_rate = lr
 
     def optimize(self, grad, name):
-        delta = -grad * self.learning_rate
+        delta = grad * self.learning_rate
         return delta
 
 
