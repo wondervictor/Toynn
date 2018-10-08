@@ -5,9 +5,8 @@ Network
 
 class Network:
 
-    def __init__(self, reg=0.0):
+    def __init__(self):
         self._params = dict()
-        self.reg = reg
         self.layers = []
         self.loss_layer = None
         self.param_layers = []
@@ -15,8 +14,7 @@ class Network:
     def parameters(self):
         return self._params
 
-    def add(self, layer, name):
-        assert name is not None
+    def add(self, layer):
         assert layer is not None
 
         self.layers.append(layer)
@@ -49,11 +47,11 @@ class Network:
         # input's grad
         return grad
 
-    def optimize(self, lr):
+    def optimize(self, optimizer):
         # SGD
         for layer in self.param_layers:
-            layer.params['weights'].data -= (layer.params['weights'].grad + self.reg*layer.params['weights'].data) * lr
-            layer.params['bias'].data -= layer.params['bias'].grad * lr
+            for k in layer.params.keys():
+                layer.params[k].data -= optimizer.optimize(layer.params[k].get_grad(), layer.name+k)
 
             # optimizer.optimize(layer.params)
 

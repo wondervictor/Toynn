@@ -7,7 +7,8 @@ import numpy as np
 
 class Sigmoid:
 
-    def __init__(self):
+    def __init__(self, name='sigmoid'):
+        self.name = name
         self._cache = None
 
     def __call__(self, x):
@@ -29,7 +30,8 @@ class Sigmoid:
 
 class ReLU:
 
-    def __init__(self):
+    def __init__(self, name='relu'):
+        self.name = name
         self._cache = None
 
     def __call__(self, x):
@@ -52,7 +54,8 @@ class ReLU:
 
 class LeakyReLU:
 
-    def __init__(self, negative_slope=0.2):
+    def __init__(self, name='leaky_relu', negative_slope=0.2):
+        self.name = name
         self.negative_slope = negative_slope
         self._cache = None
 
@@ -74,7 +77,8 @@ class LeakyReLU:
 
 class Softmax:
 
-    def __init__(self):
+    def __init__(self, name='softmax'):
+        self.name = name
         self._cache = None
 
     def __call__(self, x):
@@ -101,7 +105,8 @@ class Softmax:
 
 class Tanh:
 
-    def __init__(self):
+    def __init__(self, name='tanh'):
+        self.name = name
         self._cache = None
 
     def __call__(self, x):
@@ -124,7 +129,8 @@ class Tanh:
 
 class ELU:
 
-    def __init__(self, alpha=0.0):
+    def __init__(self, name='elu', alpha=0.0):
+        self.name = name
         self._cache = None
         self.alpha = alpha
 

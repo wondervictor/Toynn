@@ -18,38 +18,35 @@ def mnist_model():
 
     initializer = parameter.GaussianInitializer(std=0.1)
     bias_initializer = parameter.ConstantInitializer(0.1)
-    model = network.Network(reg=1e-4)
+
+    model = network.Network()
     model.add(
         FullyConnected(
+            name='fc1',
             in_feature=784,
             out_feature=512,
             weight_initializer=initializer,
-            bias_initializer=bias_initializer), name='fc1')
-    model.add(ReLU(), name='leaky_relu1')
+            bias_initializer=bias_initializer))
+    model.add(ReLU(name='relu1'))
     model.add(
         FullyConnected(
+            name='fc2',
             in_feature=512,
             out_feature=256,
             weight_initializer=initializer,
-            bias_initializer=bias_initializer), name='fc2')
-    model.add(ReLU(), name='leaky_relu2')
+            bias_initializer=bias_initializer))
+    model.add(ReLU(name='relu2'))
     model.add(
         FullyConnected(
+            name='fc3',
             in_feature=256,
-            out_feature=128,
-            weight_initializer=initializer,
-            bias_initializer=bias_initializer), name='fc23')
-    model.add(ReLU(), name='leaky_relu23')
-    model.add(
-        FullyConnected(
-            in_feature=128,
             out_feature=10,
             weight_initializer=initializer,
-            bias_initializer=bias_initializer), name='fc4')
-    model.add(Softmax(), name='softmax')
+            bias_initializer=bias_initializer))
+    model.add(Softmax())
 
     model.add_loss(CrossEntropyLoss())
-    lr = 0.001
+    lr = 0.1
     optimizer = SGD(lr=lr)
 
     print(model)
@@ -73,7 +70,7 @@ def mnist_model():
             _, loss = model.forward(batch_images, batch_labels)
             losses.append(loss)
             model.backward()
-            model.optimize(lr=0.1)
+            model.optimize(optimizer)
 
         predicts = np.zeros((len(test_labels)))
         for i in range(int(len(test_labels)/1000)):

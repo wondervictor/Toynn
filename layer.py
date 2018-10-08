@@ -10,15 +10,19 @@ import parameter
 class FullyConnected:
 
     def __init__(self,
+                 name,
                  in_feature,
                  out_feature,
+                 reg=1e-4,
                  mode='train',
                  weight_initializer=None,
                  bias_initializer=None):
 
+        self.name = name
         self.weights = None
         self.bias = None
         self._cache = None
+        self._reg = reg
         self._weights_shape = (in_feature, out_feature)
         self.weight_initializer = weight_initializer
         self.bias_initializer = bias_initializer
@@ -67,7 +71,7 @@ class FullyConnected:
 
         # weights gradient
         # (D1, N) * (N, D2) --> (D1, D2)
-        grad_w = np.matmul(x.T, grad_in)
+        grad_w = np.matmul(x.T, grad_in) + self._reg * self.weights.get_data()
         self.weights.set_grad(grad_w)
 
         # x gradient
@@ -84,7 +88,8 @@ class FullyConnected:
 
 class BatchNorm:
 
-    def __init__(self, num_features, mode='train', momentum=0.9, eps=1e-5):
+    def __init__(self, name, num_features, mode='train', momentum=0.9, eps=1e-5):
+        self.name = name
         self.gamma = None
         self.beta = None
         self._cache = None
@@ -148,7 +153,8 @@ class BatchNorm:
 
 class Dropout:
 
-    def __init__(self, mode='train', droprate=0.5):
+    def __init__(self, name, mode='train', droprate=0.5):
+        self.name = name
         self._cache = None
         self.dropout_rate = droprate
         self.mode = mode
